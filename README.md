@@ -1,3 +1,3 @@
 # [wendell.fun](https://wendell.fun)
 
-Personal website.
+Personal website & blogs.
