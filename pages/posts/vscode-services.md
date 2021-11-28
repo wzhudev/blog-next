@@ -10,6 +10,8 @@ author: Wendell
 
 ![](https://user-images.githubusercontent.com/12122021/70677481-3c5e3580-1cca-11ea-9cc7-de8e131d3cb4.png)
 
+---
+
 ## Introduction
 
 [上一篇文章](https://wendell.fun/posts/vscode-di)介绍了 vscode 的依赖注入机制。
