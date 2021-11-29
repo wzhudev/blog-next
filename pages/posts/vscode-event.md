@@ -26,13 +26,17 @@ Event 接口规定了一个函数，当调用了这个函数，就表示监听�
 
 ```tsx
 export interface Event<T> {
-	(listener: (e: T) => any, thisArgs?: any, disposables?: IDisposable[] | DisposableStore): IDisposable;
+  (
+    listener: (e: T) => any,
+    thisArgs?: any,
+    disposables?: IDisposable[] | DisposableStore
+  ): IDisposable
 }
 ```
 
 返回的 `IDisposable` 对象用于解除这个监听的（通过调用它的 `dispose` 方法）。
 
-另外一种解除监听的方式就是 `disposable` 了，Event 函数在执行的过程中会将 `IDisposable` 插入  `disposables`，方便调用方决定在什么时候解除监听。
+另外一种解除监听的方式就是 `disposable` 了，Event 函数在执行的过程中会将 `IDisposable` 插入 `disposables`，方便调用方决定在什么时候解除监听。
 
 ### Emitter
 
@@ -68,17 +72,17 @@ export interface Event<T> {
 `get event()`，这个方法会在 `Emitter` 中创建一个 `Event`，其主要逻辑就是将 `listener` 添加到 `this._listeners` 当中
 
 ```tsx
-const remove = this._listeners.push(!thisArgs ? listener : [listener, thisArgs]);
+const remove = this._listeners.push(!thisArgs ? listener : [listener, thisArgs])
 ```
 
 `Emitter` 类型还提供了一些特殊的回调接口：
 
 ```tsx
 export interface EmitterOptions {
-	onFirstListenerAdd?: Function;
-	onFirstListenerDidAdd?: Function;
-	onListenerDidAdd?: Function;
-	onLastListenerRemove?: Function;
+  onFirstListenerAdd?: Function
+  onFirstListenerDidAdd?: Function
+  onListenerDidAdd?: Function
+  onLastListenerRemove?: Function
 }
 ```
 
@@ -91,30 +95,34 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 #### once
 
 ```tsx
-	export function once<T>(event: Event<T>): Event<T> {
-		return (listener, thisArgs = null, disposables?) => {
-			// we need this, in case the event fires during the listener call
-			let didFire = false;
-			let result: IDisposable;
-			result = event(/* A */ e => {				
-				if (didFire) {
-					return;
-				} else if (result) {
-					result.dispose();
-				} else {
-					didFire = true;
-				}
+export function once<T>(event: Event<T>): Event<T> {
+  return (listener, thisArgs = null, disposables?) => {
+    // we need this, in case the event fires during the listener call
+    let didFire = false
+    let result: IDisposable
+    result = event(
+      /* A */ (e) => {
+        if (didFire) {
+          return
+        } else if (result) {
+          result.dispose()
+        } else {
+          didFire = true
+        }
 
-				return listener.call(thisArgs, e);
-			}, null, disposables);
+        return listener.call(thisArgs, e)
+      },
+      null,
+      disposables
+    )
 
-			if (didFire) {
-				result.dispose();
-			}
+    if (didFire) {
+      result.dispose()
+    }
 
-			return result;
-		};
-	}
+    return result
+  }
+}
 ```
 
 这个方法用于将一个 `Event` 变为只能派发一次的，事件类型相同的 `Event` 。
@@ -126,20 +134,20 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 #### snapshot
 
 ```tsx
-	export function snapshot<T>(event: Event<T> /* B */): Event<T> {
-		let listener: IDisposable;
-		const emitter = new Emitter<T>({
-			onFirstListenerAdd() {
-				listener = event(emitter.fire, emitter);
-			},
-			onLastListenerRemove() {
-				listener.dispose();
-			}
-		});
+export function snapshot<T>(event: Event<T> /* B */): Event<T> {
+  let listener: IDisposable
+  const emitter = new Emitter<T>({
+    onFirstListenerAdd() {
+      listener = event(emitter.fire, emitter)
+    },
+    onLastListenerRemove() {
+      listener.dispose()
+    }
+  })
 
-		/* C */
-		return emitter.event;
-	}
+  /* C */
+  return emitter.event
+}
 ```
 
 这个工具方法用于生成 `map` 等操作，我们把它和 `map` 一起分析。
@@ -149,17 +157,19 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 将一种类型的事件转换成另一种类型的事件，看起来和 `Array` 的 `map` 非常相似。
 
 ```tsx
-	export function map<I, O>(event: Event<I> /* A */, map: (i: I) => O): Event<O> {
-		return snapshot(
-                         /* B */
-			(listener, thisArgs = null, disposables?) => event(i => listener.call(thisArgs, map(i)), null, disposables));
-	}
+export function map<I, O>(event: Event<I> /* A */, map: (i: I) => O): Event<O> {
+  return snapshot(
+    /* B */
+    (listener, thisArgs = null, disposables?) =>
+      event((i) => listener.call(thisArgs, map(i)), null, disposables)
+  )
+}
 ```
 
 从代码可以看出：这里的 `Event` 链的顺序是
 
 1. 被 `map` 装饰的 `Event` A
-2. `snapshot` 的参数，匿名的 `Event` B 
+2. `snapshot` 的参数，匿名的 `Event` B
 3. `Emitter` 暴露出的 `Event` C
 
 当用户调用这个 `map` 转换出的 `Event` 的时候，实际上订阅的是 C，然后 C 在第一次被订阅时，会调用 B，而 B 又去订阅了 A。这里我们看到了 `Emitter` 的参数钩子起到了什么作用：B 是一个很特殊的 `Event` 它在 `onFirstListenerAdd` 中被订阅了 ，并且之后它并不会参与到 listener 的调用链中来，而是帮助 A 和 C 的 listener 之间创建了调用链，同时调用 `map` 对事件做了处理。
@@ -177,9 +187,14 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 #### any
 
 ```tsx
-	export function any<T>(...events: Event<T>[]): Event<T> {
-		return (listener, thisArgs = null, disposables?) => combinedDisposable(...events.map(event => event(e => listener.call(thisArgs, e), null, disposables)));
-	}
+export function any<T>(...events: Event<T>[]): Event<T> {
+  return (listener, thisArgs = null, disposables?) =>
+    combinedDisposable(
+      ...events.map((event) =>
+        event((e) => listener.call(thisArgs, e), null, disposables)
+      )
+    )
+}
 ```
 
 这个方法会在 events 中任意一个 `Event` 派发事件的时候派发一个事件。
@@ -189,50 +204,69 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 对 Event 链条上的事件做防抖处理。
 
 ```tsx
-	export function debounce<T>(event: Event<T>, merge: (last: T | undefined, event: T) => T, delay?: number, leading?: boolean, leakWarningThreshold?: number): Event<T>;
-	export function debounce<I, O>(event: Event<I>, merge: (last: O | undefined, event: I) => O, delay?: number, leading?: boolean, leakWarningThreshold?: number): Event<O>;
-	export function debounce<I, O>(event: Event<I>, merge: (last: O | undefined, event: I) => O, delay: number = 100, leading = false, leakWarningThreshold?: number): Event<O> {
+export function debounce<T>(
+  event: Event<T>,
+  merge: (last: T | undefined, event: T) => T,
+  delay?: number,
+  leading?: boolean,
+  leakWarningThreshold?: number
+): Event<T>
+export function debounce<I, O>(
+  event: Event<I>,
+  merge: (last: O | undefined, event: I) => O,
+  delay?: number,
+  leading?: boolean,
+  leakWarningThreshold?: number
+): Event<O>
+export function debounce<I, O>(
+  event: Event<I>,
+  merge: (last: O | undefined, event: I) => O,
+  delay: number = 100,
+  leading = false,
+  leakWarningThreshold?: number
+): Event<O> {
+  let subscription: IDisposable
+  let output: O | undefined = undefined
+  let handle: any = undefined
+  let numDebouncedCalls = 0
 
-		let subscription: IDisposable;
-		let output: O | undefined = undefined;
-		let handle: any = undefined;
-		let numDebouncedCalls = 0;
+  const emitter = new Emitter<O>({
+    leakWarningThreshold,
+    onFirstListenerAdd() {
+      subscription = event(
+        /* A */ (cur) => {
+          numDebouncedCalls++
+          output = merge(output, cur)
 
-		const emitter = new Emitter<O>({
-			leakWarningThreshold,
-			onFirstListenerAdd() {
-				subscription = event(/* A */ cur => {
-					numDebouncedCalls++;
-					output = merge(output, cur);
+          if (leading && !handle) {
+            emitter.fire(output)
+            output = undefined
+          }
 
-					if (leading && !handle) {
-						emitter.fire(output);
-						output = undefined;
-					}
+          clearTimeout(handle)
+          handle = setTimeout(() => {
+            const _output = output
+            output = undefined
+            handle = undefined
+            if (!leading || numDebouncedCalls > 1) {
+              emitter.fire(_output!)
+            }
 
-					clearTimeout(handle);
-					handle = setTimeout(() => {
-						const _output = output;
-						output = undefined;
-						handle = undefined;
-						if (!leading || numDebouncedCalls > 1) {
-							emitter.fire(_output!);
-						}
+            numDebouncedCalls = 0
+          }, delay)
+        }
+      )
+    },
+    onLastListenerRemove() {
+      subscription.dispose()
+    }
+  })
 
-						numDebouncedCalls = 0;
-					}, delay);
-				});
-			},
-			onLastListenerRemove() {
-				subscription.dispose();
-			}
-		});
-
-		return emitter.event;
-	}
+  return emitter.event
+}
 ```
 
-不难看出这段代码的核心逻辑就是 A 处的 listener，它会对 debounce 时间内对数据做归并处理，并设置定时器，当收到新事件时就取消定时器，而定时器到期时就调用  [emitter.fire](http://emitter.fire) 向下游继续发送事件。
+不难看出这段代码的核心逻辑就是 A 处的 listener，它会对 debounce 时间内对数据做归并处理，并设置定时器，当收到新事件时就取消定时器，而定时器到期时就调用 [emitter.fire](http://emitter.fire) 向下游继续发送事件。
 
 #### stopWatch
 
@@ -247,51 +281,55 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 这个 `Event` 在没有人订阅它时，会缓存所有收到的事件，并在收到订阅时将已经缓存的事件全部发送出去。
 
 ```tsx
-	export function buffer<T>(event: Event<T>, nextTick = false, _buffer: T[] = []): Event<T> {
-		let buffer: T[] | null = _buffer.slice();
+export function buffer<T>(
+  event: Event<T>,
+  nextTick = false,
+  _buffer: T[] = []
+): Event<T> {
+  let buffer: T[] | null = _buffer.slice()
 
-		let listener: IDisposable | null = event(e => {
-			if (buffer) {
-				buffer.push(e);
-			} else {
-				emitter.fire(e);
-			}
-		});
+  let listener: IDisposable | null = event((e) => {
+    if (buffer) {
+      buffer.push(e)
+    } else {
+      emitter.fire(e)
+    }
+  })
 
-		const flush = () => {
-			if (buffer) {
-				buffer.forEach(e => emitter.fire(e));
-			}
-			buffer = null;
-		};
+  const flush = () => {
+    if (buffer) {
+      buffer.forEach((e) => emitter.fire(e))
+    }
+    buffer = null
+  }
 
-		const emitter = new Emitter<T>({
-			onFirstListenerAdd() {
-				if (!listener) {
-					listener = event(e => emitter.fire(e));
-				}
-			},
+  const emitter = new Emitter<T>({
+    onFirstListenerAdd() {
+      if (!listener) {
+        listener = event((e) => emitter.fire(e))
+      }
+    },
 
-			onFirstListenerDidAdd() {
-				if (buffer) {
-					if (nextTick) {
-						setTimeout(flush);
-					} else {
-						flush();
-					}
-				}
-			},
+    onFirstListenerDidAdd() {
+      if (buffer) {
+        if (nextTick) {
+          setTimeout(flush)
+        } else {
+          flush()
+        }
+      }
+    },
 
-			onLastListenerRemove() {
-				if (listener) {
-					listener.dispose();
-				}
-				listener = null;
-			}
-		});
+    onLastListenerRemove() {
+      if (listener) {
+        listener.dispose()
+      }
+      listener = null
+    }
+  })
 
-		return emitter.event;
-	}
+  return emitter.event
+}
 ```
 
 如果调用 buffer 时传入了 `nextTick = True` ，则发送缓存事件的操作会易步进行，所以如果你第一次订阅时同步添加了很多 listener，则它们都会收到这些缓存的事件。
@@ -301,9 +339,9 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 如果要多次使用 `map`, `filter` 等函数，一个比较优雅的写法是链式调用，例如 `Event.map.filter.xxx`， `ChainableEvent` 就是为此准备的，通过调用 `chain` 方法，一个 `Event` 会转换成 `ChainableEvent`，然后就可以进行链式调用：
 
 ```tsx
-        export function chain<T>(event: Event<T>): IChainableEvent<T> {
-		return new ChainableEvent(event);
-	}
+export function chain<T>(event: Event<T>): IChainableEvent<T> {
+  return new ChainableEvent(event)
+}
 ```
 
 `ChainableEvent` 的实现很简单，就是对上面的方法进行了一次包裹，这里就不再赘述了。
@@ -313,14 +351,18 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 #### fromNodeEventEmitter
 
 ```tsx
-	export function fromNodeEventEmitter<T>(emitter: NodeEventEmitter, eventName: string, map: (...args: any[]) => T = id => id): Event<T> {
-		const fn = (...args: any[]) => result.fire(map(...args));
-		const onFirstListenerAdd = () => emitter.on(eventName, fn);
-		const onLastListenerRemove = () => emitter.removeListener(eventName, fn);
-		const result = new Emitter<T>({ onFirstListenerAdd, onLastListenerRemove });
+export function fromNodeEventEmitter<T>(
+  emitter: NodeEventEmitter,
+  eventName: string,
+  map: (...args: any[]) => T = (id) => id
+): Event<T> {
+  const fn = (...args: any[]) => result.fire(map(...args))
+  const onFirstListenerAdd = () => emitter.on(eventName, fn)
+  const onLastListenerRemove = () => emitter.removeListener(eventName, fn)
+  const result = new Emitter<T>({ onFirstListenerAdd, onLastListenerRemove })
 
-		return result.event;
-	}
+  return result.event
+}
 ```
 
 该方法是对 node.js 原生事件的包裹，在原生事件的回调中调用 [`Emitter.fire`](http://emitter.fire)。
@@ -332,23 +374,23 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 #### fromPromise
 
 ```tsx
-	export function fromPromise<T = any>(promise: Promise<T>): Event<undefined> {
-		const emitter = new Emitter<undefined>();
-		let shouldEmit = false;
+export function fromPromise<T = any>(promise: Promise<T>): Event<undefined> {
+  const emitter = new Emitter<undefined>()
+  let shouldEmit = false
 
-		promise
-			.then(undefined, () => null)
-			.then(() => {
-				if (!shouldEmit) {
-					setTimeout(() => emitter.fire(undefined), 0);
-				} else {
-					emitter.fire(undefined);
-				}
-			});
+  promise
+    .then(undefined, () => null)
+    .then(() => {
+      if (!shouldEmit) {
+        setTimeout(() => emitter.fire(undefined), 0)
+      } else {
+        emitter.fire(undefined)
+      }
+    })
 
-		shouldEmit = true;
-		return emitter.event;
-	}
+  shouldEmit = true
+  return emitter.event
+}
 ```
 
 将 Promise 转换为事件。通过 `shouldEmit` 确保 Promise 不会因为已经 resolve 而在订阅发生之前就开始派发事件（这样会导致错过事件）。
@@ -381,7 +423,7 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
 
 这是一个非常有趣的类，它提供了一个 `wrapEvent` 方法包裹一个 `Event`，并提供了一个 `bufferEvents` 方法，在这个方法的回调内所有经过它 `wrapEvent` 包裹的 `Event`，都先不会被传播给订阅者。
 
-```tsx
+````tsx
 /**
  * The EventBufferer is useful in situations in which you want
  * to delay firing your events during some code.
@@ -403,33 +445,36 @@ vscode 还提供了一系列工具方法用于组合 `Event` ，得到更加丰�
  * ```
  */
 export class EventBufferer {
+  private buffers: Function[][] = []
 
-	private buffers: Function[][] = [];
+  wrapEvent<T>(event: Event<T>): Event<T> {
+    return (listener, thisArgs?, disposables?) => {
+      return event(
+        (i) => {
+          const buffer = this.buffers[this.buffers.length - 1]
 
-	wrapEvent<T>(event: Event<T>): Event<T> {
-		return (listener, thisArgs?, disposables?) => {
-			return event(i => {
-				const buffer = this.buffers[this.buffers.length - 1];
+          if (buffer) {
+            buffer.push(() => listener.call(thisArgs, i))
+          } else {
+            listener.call(thisArgs, i)
+          }
+        },
+        undefined,
+        disposables
+      )
+    }
+  }
 
-				if (buffer) {
-					buffer.push(() => listener.call(thisArgs, i));
-				} else {
-					listener.call(thisArgs, i);
-				}
-			}, undefined, disposables);
-		};
-	}
-
-	bufferEvents<R = void>(fn: () => R): R {
-		const buffer: Array<() => R> = [];
-		this.buffers.push(buffer);
-		const r = fn();
-		this.buffers.pop();
-		buffer.forEach(flush => flush());
-		return r;
-	}
+  bufferEvents<R = void>(fn: () => R): R {
+    const buffer: Array<() => R> = []
+    this.buffers.push(buffer)
+    const r = fn()
+    this.buffers.pop()
+    buffer.forEach((flush) => flush())
+    return r
+  }
 }
-```
+````
 
 当 `bufferEvents` 被调用的时候，会往 `this.buffers` 中压入一个新 buffer，在 fn 执行过程中派发的事件，就会因为 `if (buffer)` 判断为 `true` 而被缓存， `fn` 执行完毕之后， `buffer` 被弹出，其中包含的事件全部被派发。
 
@@ -439,18 +484,18 @@ export class EventBufferer {
 
 ```tsx
 export class Relay<T> implements IDisposable {
-	// ...
+  // ...
 
-	set input(event: Event<T>) {
-		this.inputEvent = event;
+  set input(event: Event<T>) {
+    this.inputEvent = event
 
-		if (this.listening) {
-			this.nputEventListener.dispose();
-			this.inputEventListener = event(this.emitter.fire, this.emitter);
-		}
-	}
+    if (this.listening) {
+      this.nputEventListener.dispose()
+      this.inputEventListener = event(this.emitter.fire, this.emitter)
+    }
+  }
 
-	// ...
+  // ...
 }
 ```
 
@@ -460,5 +505,5 @@ export class Relay<T> implements IDisposable {
 
 vscode 事件模块是所谓响应式编程的一种实现，如果想要继续学习响应式编程，非常推荐以下两个项目：
 
-- [RxJS](https://rxjs-dev.firebaseapp.com/guide/overview)，前端最强大的响应式编程库，很多 RxJS 的概念都可以在 vscode 的事件模块中找到对应，例如 Emitter 十分类似于 Subject，  `Event` 类似于 `Observable`， `map` `reduce` `filter` 等函数，在 RxJS 中都有同名的操作符，但是 RxJS 更加强大，除了传递事件外，还能够传递异常以及事件流结束信息、支持事件调度等等，操作符更是要多得多
+- [RxJS](https://rxjs-dev.firebaseapp.com/guide/overview)，前端最强大的响应式编程库，很多 RxJS 的概念都可以在 vscode 的事件模块中找到对应，例如 Emitter 十分类似于 Subject， `Event` 类似于 `Observable`， `map` `reduce` `filter` 等函数，在 RxJS 中都有同名的操作符，但是 RxJS 更加强大，除了传递事件外，还能够传递异常以及事件流结束信息、支持事件调度等等，操作符更是要多得多
 - [callbag](https://github.com/callbag/callbag)，是一套响应式编程规范（注意，不是库），vscode 和 RxJS 的事件链都是“推”机制的，而 callbag 同时支持推拉机制，而且实现上完全基于 JavaScript 强大的闭包机制，喜欢闭包体操的读者可以好好研究作者对几个操作符的实现

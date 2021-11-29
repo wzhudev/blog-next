@@ -14,8 +14,8 @@ author: Wendell
 
 ```tsx
 require('./bootstrap-amd').load('vs/code/electron-main/main', () => {
-	// ...
-});
+  // ...
+})
 ```
 
 vs/code/election-main/main 是 vscode 应用的主入口，这句代码的意思是加载主入口文件并执行。bootstrap-amd 文件暴露的 load 方法则又调用了 vs/loader 文件暴露的 loader 方法：
@@ -24,9 +24,9 @@ vs/code/election-main/main 是 vscode 应用的主入口，这句代码的意思
 const loader = require('./vs/loader')
 
 exports.load = function (entrypoint, onLoad, onError) {
-	// ...
-	loader([entrypoint], onLoad, onError);
-};
+  // ...
+  loader([entrypoint], onLoad, onError)
+}
 ```
 
 这个 vs/loader 文件中的内容，即是 vscode 自己实现的模块加载系统 vscode-loader，这篇文章我们来学习它的设计和实现。
@@ -49,10 +49,10 @@ vscode-loader 的源代码不在 vscode 仓库当中，源码地址在 [https://
 
 ```jsx
 // file 'a.js'
-var a = 2;
+var a = 2
 
 // file 'b/js'
-console.log(a);
+console.log(a)
 ```
 
 只要在 HTML 引用 js 文件的先后顺序是 a.js → b.js，上面这段代码就能正常输出 2。
@@ -67,16 +67,16 @@ console.log(a);
 
 ```jsx
 // file 'a.js'
-const a = 2;
+const a = 2
 
 export function getA() {
-	return a;
+  return a
 }
 
 // file 'b.js'
-import { getA } from 'a';
+import { getA } from 'a'
 
-console.log(getA());
+console.log(getA())
 ```
 
 在 a.js 文件中，有两个变量 `a` 和 `getA`，其中 `getA` 通过 export 语法被**导出**。而 b.js 文件**导入**了 a.js 所导出的 `getA` 并调用，注意：它无法导入 `a`，于是 `a` 就变成 a.js 文件所**私有**的了，我们可以看到，模块化代码不会将变量泄漏到全局环境当中去。
@@ -92,9 +92,30 @@ console.log(getA());
 vscode（大部分的情况下）使用的是 [AMD](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) 规范，vscode 的 src/tsconfig.base.json 里可以看到相关配置， 编译出来的文件像是这样：
 
 ```jsx
-define(["require", "exports", "vs/base/common/lifecycle", "vs/base/common/actions", "vs/base/browser/dom", "vs/base/common/types", "vs/base/browser/keyboardEvent", "vs/base/common/event", "vs/base/browser/ui/actionbar/actionViewItems", "vs/css!./actionbar"], function (require, exports, lifecycle_1, actions_1, DOM, types, keyboardEvent_1, event_1, actionViewItems_1) {
-    "use strict";
-		// ...
+define([
+  'require',
+  'exports',
+  'vs/base/common/lifecycle',
+  'vs/base/common/actions',
+  'vs/base/browser/dom',
+  'vs/base/common/types',
+  'vs/base/browser/keyboardEvent',
+  'vs/base/common/event',
+  'vs/base/browser/ui/actionbar/actionViewItems',
+  'vs/css!./actionbar'
+], function (
+  require,
+  exports,
+  lifecycle_1,
+  actions_1,
+  DOM,
+  types,
+  keyboardEvent_1,
+  event_1,
+  actionViewItems_1
+) {
+  'use strict'
+  // ...
 })
 ```
 
@@ -102,18 +123,18 @@ define(["require", "exports", "vs/base/common/lifecycle", "vs/base/common/action
 
 ```jsx
 define('a', [], () => {
-	const a = 2;
+  const a = 2
 
-	function getA() {
-    return a;
+  function getA() {
+    return a
   }
 
-	return { getA };
-});
+  return { getA }
+})
 
 define('b', ['a'], (a) => {
-	console.log(a.getA());
-});
+  console.log(a.getA())
+})
 ```
 
 其中第一个参数为模块的名称，第二个参数是模块需要引入的其他模块，或者称当前模块的**依赖**（dependency），第三个参数是回调函数，当模块的依赖都已经加载完毕之后就会执行这个回调函数来加载当前模块，回调函数的参数是各个依赖导出的变量，函数的内容则是模块的代码，返回的对象则是这个模块要导出的所有变量。可以看到：通过将变量定义在回调函数的作用域中，可避免把变量泄露到全局环境，而返回的变量（即模块的导出），则可以通过闭包来访问内部变量。
@@ -122,14 +143,14 @@ define('b', ['a'], (a) => {
 
 ```jsx
 define('a', ['exports'], (exports) => {
-	const a = 2;
+  const a = 2
 
-	function getA() {
-		return a;
-	}
+  function getA() {
+    return a
+  }
 
-	exports.getA = getA; // 这样导出也是可以的
-});
+  exports.getA = getA // 这样导出也是可以的
+})
 ```
 
 至此我们了解了 AMD 规范的基本内容，接下来要了解的就是 define 方法是如何工作的，本文余下的内容即介绍 vscode 中的模块加载工具 vscode-loader 的工作原理。
@@ -198,7 +219,7 @@ define('a', ['exports'], (exports) => {
 对 Node.js 有所了解的话，一定会知道 Node.js 的模块规范是 CommonJS，引入资源的时候使用 require 语法：
 
 ```jsx
-const fs = require('fs');
+const fs = require('fs')
 ```
 
 而我们之前看到 vscode patch 了 Node.js 的 `require` 函数，那么也需要对原来的模块化系统进行兼容，另外，这个 require 还要能够接入 vscode 自己的 AMD 模块系统：
@@ -236,9 +257,9 @@ const fs = require('fs');
 const loader = require('./vs/loader')
 
 exports.load = function (entrypoint, onLoad, onError) {
-	// ...
-	loader([entrypoint], onLoad, onError);
-};
+  // ...
+  loader([entrypoint], onLoad, onError)
+}
 ```
 
 ### RequireFunc
@@ -373,7 +394,7 @@ exports.load = function (entrypoint, onLoad, onError) {
 1. 调用 `_normalizeDependencies` 对依赖进行处理，这个过程比较简单，实际上就是根据依赖项的标识字符串生成一个 `RegularDependency` 对象
 2. 创建一个 `Module` 对象
 3. 将 `Module` 记录到 `_moduels2` 数组当中
-4. 调用 _resolve 方法尝试解析该模块
+4. 调用 \_resolve 方法尝试解析该模块
 
 `_resolve` 方法负责解析一个模块。首先它会处理 `Module` 所有的 dependency，查看各个 dependency 是否已经解析完毕。如果有 dependency 没有解析，那么就通过 `_loadModule` 方法加载该 dependency，这个我们下一个小节会详叙述。
 
@@ -435,10 +456,10 @@ exports.load = function (entrypoint, onLoad, onError) {
 			if (module.unresolvedDependenciesCount === 0) {
 				this._onModuleComplete(module);
 			}
-		
+
 ```
 
-这里我们先来看另一个情形，即所有的 dependency 都已经解析完毕的情形，此时 _resolve 方法会直接调用 `_onModuleComplete`  方法结束一个 `Module` 的加载。这里， `ModuleManager` 需要将依赖的导出内容按照顺序传递给模块的回调函数，然后查看是否有模块依赖当前模块，以及能够将哪些模块也结束加载。
+这里我们先来看另一个情形，即所有的 dependency 都已经解析完毕的情形，此时 \_resolve 方法会直接调用 `_onModuleComplete` 方法结束一个 `Module` 的加载。这里， `ModuleManager` 需要将依赖的导出内容按照顺序传递给模块的回调函数，然后查看是否有模块依赖当前模块，以及能够将哪些模块也结束加载。
 
 ```jsx
 		private _onModuleComplete(module: Module): void {
@@ -533,7 +554,6 @@ exports.load = function (entrypoint, onLoad, onError) {
 
 ![Untitled](https://user-images.githubusercontent.com/12122021/127628471-5ea33233-0d6f-43f4-bfab-75e77096dac4.png)
 
-
 ### 循环依赖的发现和处理
 
 在 `_resolve` 方法的执行过程中，vscode-loader 会检测模块之间是否存在循环依赖，具体方法是通过调用 `_hasDependencyPath` 方法，查看是否存在 dependency 到当前 `Module` 的依赖路径。我们来举一个例子：假设有 a b c d 四个模块，其中 a 依赖 b d 模块，b 依赖 d 模块，d 依赖 c 模块，而 c 又依赖 a 模块， 那么这里显然存在 a - c - d 的循环依赖。我们假设 a 是先加载的模块，那么 `ModuleManager` 应当在加载 c 的环节发现 a 循环依赖了 c。
@@ -602,7 +622,7 @@ exports.load = function (entrypoint, onLoad, onError) {
 
 这其实就是一个**广度优先的有向图搜索算法**，在遍历的过程中，我们尝试找到从 `from` 到 `to` 的路径，找得到的话我们就知道有循环依赖了（因为我们已经知道 `from` 是 `to` 的依赖，所以肯定存在一条 `to` 到 `from` 的路径）。
 
-发现循环依赖之后，vscode-loader 会通过 `_findCyclePath` 中的一个深度优先的搜索算法找到该路径并提示开发者，然后直接标记这个模块已经解析完毕，防止出现死锁（当然这种情况下并不能保证能够正常工作，实际上碰到文件的循环依赖，就应该想办法去解开循环依赖）。 
+发现循环依赖之后，vscode-loader 会通过 `_findCyclePath` 中的一个深度优先的搜索算法找到该路径并提示开发者，然后直接标记这个模块已经解析完毕，防止出现死锁（当然这种情况下并不能保证能够正常工作，实际上碰到文件的循环依赖，就应该想办法去解开循环依赖）。
 
 讲完了所有依赖项都已经解析完的理想情形，接下来我们看看未加载的依赖是怎么加载的，这里会涉及到 JavaScript 文件的加载和解析过程。
 
@@ -748,7 +768,7 @@ exports.load = function (entrypoint, onLoad, onError) {
 					const script = this._createAndEvalScript(moduleManager, scriptSource, scriptOpts, callback, errorback);
 				});
 			}
-		}				
+		}
 
 		private _createAndEvalScript(moduleManager: IModuleManager, contents: string, options: INodeVMScriptOptions, callback: () => void, errorback: (err: any) => void): INodeVMScript {
 			const script = new this._vm.Script(contents, options);
@@ -779,7 +799,7 @@ exports.load = function (entrypoint, onLoad, onError) {
 ```jsx
 	const DefineFunc: IDefineFunc = <any>function (id: any, dependencies: any, callback: any): void {
 		if (id) {
-			// 
+			//
 		} else {
 			moduleManager.enqueueDefineAnonymousModule(dependencies, callback);
 		}
