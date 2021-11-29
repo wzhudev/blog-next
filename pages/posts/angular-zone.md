@@ -1,13 +1,12 @@
 ---
 title: Angular 源码解析 - Zone.js
-date: 2019/10/61
+date: 2019/10/16
 description: 介绍 Angular 的 Zone.js 机制
 tag: Angular, source code, Chinese, Zone.js
 author: Wendell
 ---
 
 # Angular 源码解析 - Zone.js
-
 
 Angular 源码解析系列。这篇文章有关于 Zone.js 的用途，实现和 NgZone 的实现，以及 Angular 如何使用 Zone.js 实现自动变更检测。
 
@@ -39,7 +38,7 @@ this._zone.onMicrotaskEmpty.subscribe({
     this._zone.run(() => {
       this.tick()
     })
-  },
+  }
 })
 ```
 
@@ -248,7 +247,7 @@ this._zone.onMicrotaskEmpty.subscribe({
     this._zone.run(() => {
       this.tick()
     })
-  },
+  }
 })
 ```
 
