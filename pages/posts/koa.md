@@ -2,7 +2,7 @@
 title: Koa 源码解析
 date: 2019/10/16
 description: 这篇文章简要分析 Koa 的源码
-tag: koa, source code, Chinese, Zone.js
+tag: koa, source code, Chinese
 author: Wendell
 ---
 
