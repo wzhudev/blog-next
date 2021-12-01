@@ -14,8 +14,6 @@ author: Wendell
 
 虽然 Koa 要在下一个 major 版本里移除对生成器 generator 的支持，但是看一看它对生成器的处理还是能够加深我们对生成器的理解的。
 
-<!-- more -->
-
 Koa 源码中和生成器有关的代码就以下几行，判断 `use` 方法添加的函数是否是生成器函数，是的话，将它转换成异步函。其中调用的两个函数都是由周边库提供的。
 
 ```js
@@ -298,7 +296,3 @@ function thunkToPromise(fn) {
 7. 这里就回到了 `return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));`，继续往上游回溯
 
 到这里，我们就梳理清楚了 Koa 1.x 时代所采用的生成器函数是如何被 Koa 2.x 所采用的异步函数兼容的。
-
----
-
-可能需要画张图来更清楚地展示这个过程。
