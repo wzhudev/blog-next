@@ -2,7 +2,7 @@
 title: 如何提高效率
 date: 2019/10/16
 description: "翻译 aaronsw 的文章 HOWTO: Be More Productive"
-tag: Aaron Swartz, awesome, Chinese
+tag: Aaron Swartz, productivity, translation, Chinese
 author: Wendell
 ---
 
