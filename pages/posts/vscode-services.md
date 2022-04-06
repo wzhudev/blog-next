@@ -118,7 +118,7 @@ for (let [id, descriptor] of contributedServices) {
 const instantiationService = new InstantiationService(serviceCollection, true)
 ```
 
-_我们在[上一篇文章](https://github.com/wendellhu95/blog/issues/25)讲过 vscode 的全局单例注入。_
+_我们在[上一篇文章](https://github.com/hullis/blog/issues/25)讲过 vscode 的全局单例注入。_
 
 那么究竟有哪些服务会被注入进来呢？这其实是在入口文件中确定的。
 

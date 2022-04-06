@@ -62,7 +62,7 @@ author: Wendell
 
 ### 参加开源
 
-可能对于在校大学生来说很少有时间或机会参与真正的企业级产品开发，所以建议大家[从写开源开始](https://github.com/wendellhu95/blog/issues/12)。
+可能对于在校大学生来说很少有时间或机会参与真正的企业级产品开发，所以建议大家[从写开源开始](https://github.com/hullis/blog/issues/12)。
 
 ## 参考
 
