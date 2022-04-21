@@ -1,12 +1,12 @@
 ---
-title: vscode 源码解析 - Contribution 插件化
+title: vscode 源码解析 - contribution 插件化
 date: 2022/04/20
 description: 介绍 vscode 内部基于 contribution 的插件化机制
 tag: vscode, source code, Chinese, plugging
 author: Wendell
 ---
 
-# vscode 源码解析 - 插件化
+# vscode 源码解析 - contribution 插件化
 
 ![cover](https://user-images.githubusercontent.com/12122021/70677481-3c5e3580-1cca-11ea-9cc7-de8e131d3cb4.png)
 
