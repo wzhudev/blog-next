@@ -3,7 +3,7 @@ title: flask-login 源码解析
 date: 2019/10/16
 description: 这篇文章介绍了 flask-login 是如何实现一个不需要使用数据库的用户认证组件的
 tag: Flask, python, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # flask-login 源码解析

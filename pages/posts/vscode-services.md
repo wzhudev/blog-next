@@ -3,7 +3,7 @@ title: vscode 源码解析 - 服务化
 date: 2019/12/15
 description: 介绍 vscode 服务化
 tag: di, vscode, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # vscode 源码解析 - 服务化
@@ -118,7 +118,7 @@ for (let [id, descriptor] of contributedServices) {
 const instantiationService = new InstantiationService(serviceCollection, true)
 ```
 
-_我们在[上一篇文章](https://github.com/hullis/blog/issues/25)讲过 vscode 的全局单例注入。_
+_我们在[上一篇文章](https://github.com/wzhudev/blog/issues/25)讲过 vscode 的全局单例注入。_
 
 那么究竟有哪些服务会被注入进来呢？这其实是在入口文件中确定的。
 

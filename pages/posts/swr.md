@@ -3,7 +3,7 @@ title: swr 源码解析
 date: 2019/11/17
 description: 这篇文章简要分析 swr 的源码
 tag: swr, vercel, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # swr 源码解析

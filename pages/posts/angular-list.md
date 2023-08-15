@@ -3,7 +3,7 @@ title: Angular 学习资源清单
 date: 2019/10/16
 description: 这篇文章是对之前知乎上对问题 “Angular 新手如何有效学习 Angular” 的回答的扩充。按照学习的先后顺序、学习的难易程度列出了在学习 Angular 的过程中可能会需要的材料。
 tag: Angular, awesome, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # Angular 学习资源清单
@@ -62,7 +62,7 @@ author: Wendell
 
 ### 参加开源
 
-可能对于在校大学生来说很少有时间或机会参与真正的企业级产品开发，所以建议大家[从写开源开始](https://github.com/hullis/blog/issues/12)。
+可能对于在校大学生来说很少有时间或机会参与真正的企业级产品开发，所以建议大家[从写开源开始](https://github.com/wzhudev/blog/issues/12)。
 
 ## 参考
 

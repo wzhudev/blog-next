@@ -3,7 +3,7 @@ title: Angular CDK Drag Drop 源码解析
 date: 2019/10/16
 description: 探究 Angular CDK 拖拽的实现
 tag: Angular, Angular CDK, drag-drop, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # Angular CDK Drag Drop 源码解析

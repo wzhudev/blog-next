@@ -3,7 +3,7 @@ title: vscode 源码解析 - 事件模块
 date: 2021/03/17
 description: 介绍 vscode 事件模块
 tag: vscode, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # vscode 源码解析 - 事件模块

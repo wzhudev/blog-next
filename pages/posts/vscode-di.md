@@ -3,7 +3,7 @@ title: vscode 源码解析 - 依赖注入
 date: 2019/12/11
 description: 介绍 vscode 依赖注入系统的实现
 tag: di, vscode, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # vscode 源码解析 - 依赖注入

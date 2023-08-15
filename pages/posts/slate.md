@@ -3,7 +3,7 @@ title: slate 架构分析
 date: 2020/9/30
 description: 简要介绍 slate 的架构
 tag: slate, Chinese, source code
-author: Wendell
+author: Wenzhao
 ---
 
 # slate 架构分析

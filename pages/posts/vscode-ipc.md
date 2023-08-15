@@ -3,7 +3,7 @@ title: vscode 源码解析 - 进程间调用
 date: 2021/03/17
 description: 介绍 vscode IPC 模块
 tag: vscode, source code, Chinese, ipc
-author: Wendell
+author: Wenzhao
 ---
 
 # vscode 源码解析 - 进程间调用

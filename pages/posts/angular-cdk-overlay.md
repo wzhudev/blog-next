@@ -3,7 +3,7 @@ title: Angular CDK Overlay 源码解析
 date: 2019/10/16
 description: 探究 Angular CDK 浮层元素的实现
 tag: Angular, Angular CDK, overlay, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # Angular CDK Overlay 源码解析

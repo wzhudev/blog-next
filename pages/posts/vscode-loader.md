@@ -3,7 +3,7 @@ title: vscode 源码解析 - vscode loader
 date: 2021/04/17
 description: 介绍 vscode 脚本加载器
 tag: vscode, source code, Chinese, ipc
-author: Wendell
+author: Wenzhao
 ---
 
 # vscode 源码解析 - vscode-loader

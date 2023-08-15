@@ -3,7 +3,7 @@ title: TypeScript 装饰器
 date: 2019/10/16
 description: 介绍 TypeScript 当中装饰器的使用
 tag: decorator, TypeScript, tutorial, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # TypeScript 装饰器

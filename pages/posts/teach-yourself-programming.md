@@ -3,7 +3,7 @@ title: 3650 天自学编程
 date: 2019/10/16
 description: 这篇文章翻译自 Peter Norvig 的 Teach Yourself Programming in Ten Years
 tag: translation, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # 3650 天自学编程

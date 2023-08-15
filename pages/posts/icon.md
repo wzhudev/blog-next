@@ -3,7 +3,7 @@ title: 时隔一年回顾 Icon 组件库的开发
 date: 2019/12/13
 description: 对 ng-zorro-antd icon 升级 SVG 的总结
 tag: icon, ng-zorro-antd, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # 时隔一年回顾 Icon 组件库的开发
@@ -50,13 +50,13 @@ Ant Design 有一套[成熟的图标设计规范](https://ant.design/docs/spec/i
 
 ##  第三种方案
 
-*你可以在[这里](https://github.com/hullis/ant-design-icons/tree/master/packages/icons-angular)找到 @ant-design/icons-angular 的源代码。*
+*你可以在[这里](https://github.com/wzhudev/ant-design-icons/tree/master/packages/icons-angular)找到 @ant-design/icons-angular 的源代码。*
 
 动态加载的意思就是：当我们需要渲染一个图标，但是这个图标还未加载的时候，我们就从服务器端获取这个图标，缓存它，再进行渲染。
 
 接下来我会通过带你阅读源码来了解这个机制是如何实现的。别担心，我们不会去看那些繁杂的细节，而是专注于主要流程。
 
-当我们需要[渲染图标](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L168)的时候，会先去缓存里查找这个图标是否加载了，如果没有的话，我们就通过调用 `_loadIconDynamically` 方法加载该图标。
+当我们需要[渲染图标](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L168)的时候，会先去缓存里查找这个图标是否加载了，如果没有的话，我们就通过调用 `_loadIconDynamically` 方法加载该图标。
 
 ```ts
 // If `icon` is a `IconDefinition` of successfully fetch, wrap it in an `Observable`.
@@ -66,7 +66,7 @@ const $iconDefinition = definitionOrNull
   : this._loadIconDynamically(icon as string);
 ```
 
-发起的[请求](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L235-L237)仅仅是向服务器请求图标的内容（其实就是一个字符串），然后将图标名称和其内容[封装](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L237)成 icon 对象，并[缓存](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L241)。
+发起的[请求](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L235-L237)仅仅是向服务器请求图标的内容（其实就是一个字符串），然后将图标名称和其内容[封装](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L237)成 icon 对象，并[缓存](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L241)。
 
 ```ts
 const source = !this._enableJsonpLoading
@@ -87,22 +87,22 @@ inProgress = source.pipe(
 
 **但这还远远不够，还有很多细节问题需要注意。**
 
-如果我们要同时渲染很多相同的图标，为每一个图标发起 HTTP 请求的话开销就太大了，所以我们应该在每个渲染流程之间[分享](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L212)请求（这个请求就是个名为 `inProgress` 的流）。有一个 [share 操作符](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L244)将会负责把图标对象广播给所有的[订阅者](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.directive.ts## L41)。并且在请求完成之后我们要[移除](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L242)这个请求流。
+如果我们要同时渲染很多相同的图标，为每一个图标发起 HTTP 请求的话开销就太大了，所以我们应该在每个渲染流程之间[分享](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L212)请求（这个请求就是个名为 `inProgress` 的流）。有一个 [share 操作符](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L244)将会负责把图标对象广播给所有的[订阅者](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.directive.ts## L41)。并且在请求完成之后我们要[移除](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L242)这个请求流。
 
 ![https://miro.medium.com/max/3048/1*b4lnigsma-eueVGsup6WvA.png](https://miro.medium.com/max/3048/1*b4lnigsma-eueVGsup6WvA.png)
 
 我们怎么知道从哪里去加载图标呢？多亏了 [Angular/CLI](https://cli.angular.io/)，我们可以通过提供一个 schematic 来帮助用户添加图标资源到他们的网站静态资源文件夹中。当用户通过命令 `ng add ng-zorro-antd` 安装 zorro 时，zorro 会询问用户是否需要修改 angular.json 文件以便添加图标资源。
 
-如果用户想从 CDN 加载图标呢？我们必须让加载图标的 URL 变成可配置的。所以我们提供了一个名为 `changeAssetsSource` 的[方法](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L128-L130)用于修改 URL 前缀。
+如果用户想从 CDN 加载图标呢？我们必须让加载图标的 URL 变成可配置的。所以我们提供了一个名为 `changeAssetsSource` 的[方法](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L128-L130)用于修改 URL 前缀。
 
-如果 CDN 禁用了跨域 XML 请求呢？我们提供了一种[类似于 JSONP 的加载机制](https://github.com/hullis/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L253)帮助开发者们绕过跨域问题，可以通过调用 `useJsonpLoading` 方法开启。
+如果 CDN 禁用了跨域 XML 请求呢？我们提供了一种[类似于 JSONP 的加载机制](https://github.com/wzhudev/ant-design-icons/blob/585354361dc80ba24a974492ce13a645e749a538/packages/icons-angular/lib/component/icon.service.ts## L253)帮助开发者们绕过跨域问题，可以通过调用 `useJsonpLoading` 方法开启。
 
 等等。所以你可以看出，即使核心概念非常简单，我们也必须考虑用户可能面临的多种场景，即使部分场景我们自己可能都不会遇到。
 
 除了动态加载，还有很多工作要做：
 
 1. 上面说到的第二种方案很棒，我们也想支持它，所以我们提供了[静态加载](https://ng.ant.design/components/icon/en## static-loading-and-dynamic-loading)方案。
-2. 需要一些[脚本](https://github.com/hullis/ant-design-icons/blob/master/packages/icons-angular/build/generate.ts)来生成图标资源。
+2. 需要一些[脚本](https://github.com/wzhudev/ant-design-icons/blob/master/packages/icons-angular/build/generate.ts)来生成图标资源。
 3. 我们之前的图标 API 就是没有 API，真的。用户们想要渲染图标的时候仅需要写一个有特定 class 的 `i` 标签，比如 `<i class="anticon anticon-clock">`，所以我们还要兼容这种基于类名的 API，我们使用了 [MutationObserver](https://github.com/NG-ZORRO/ng-zorro-antd/blob/97eb720afdce9606fcea95ad74d70c9fa1b7c5fa/components/icon/nz-icon.directive.ts## L233)。
 4. 需要支持[旋转、自定义图标、命名空间和 iconfont 等](https://ng.ant.design/components/icon/zh## %5Bnz-icon%5D)多种功能。
 5. 撰写文档（**十分重要**）。

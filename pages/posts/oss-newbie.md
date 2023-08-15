@@ -3,7 +3,7 @@ title: 如何给大型前端开源项目贡献源码
 date: 2019/10/16
 description: 用一个例子介绍如何开始给开源项目贡献代码
 tag: OSS, tutorial, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # 如何给大型前端开源项目贡献源码

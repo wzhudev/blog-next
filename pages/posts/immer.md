@@ -3,7 +3,7 @@ title: Immer 源码浅析
 date: 2020/1/20
 description: 简要分析 Immer 的源代码
 tag: immer, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # Immer 源码浅析

@@ -3,7 +3,7 @@ title: Redux 源码解析
 date: 2019/10/16
 description: 对 Redux 运行原理和源代码进行简单分析
 tag: redux, react, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # Redux 源码解析

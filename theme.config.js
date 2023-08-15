@@ -3,7 +3,7 @@ const YEAR = new Date().getFullYear()
 export default {
   footer: (
     <small style={{ display: 'block', marginTop: '8rem' }}>
-      <time>{YEAR}</time>, CC BY-NC 4.0 © Wendell.
+      <time>{YEAR}</time>, CC BY-NC 4.0 © Wenzhao.
       <a href="/feed.xml">RSS</a>
       <style jsx>{`
         a {

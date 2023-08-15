@@ -3,7 +3,7 @@ title: Flask 源码解析
 date: 2019/10/16
 description: 简单分析 Flask 源代码
 tag: Flask, python, source code, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # Flask 源码解析

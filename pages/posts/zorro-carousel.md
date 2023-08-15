@@ -3,7 +3,7 @@ title: NG-ZORRO 进阶指南：为轮播图组件自定义切换效果
 date: 2019/10/16
 description: 如何在 ng-zorro-antd 当中实现自定义 carousel 切换效果
 tag: ng-zorro-antd, Angular, tutorial, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # NG-ZORRO 进阶指南：为轮播图组件自定义切换效果

@@ -3,7 +3,7 @@ title: React 的新范式 - DI, RxJS & Hooks
 date: 2020/1/17
 description: 介绍一种开发 React 应用的新思路
 tag: di, react, Chinese
-author: Wendell
+author: Wenzhao
 ---
 
 # React 的新范式 - DI, RxJS & Hooks
@@ -67,7 +67,7 @@ vscode 的代码组织和运行机制都明显突出了依赖注入在这个项�
 - vscode 基于依赖注入模式构建，从第一个类 `CodeMain` 开始，DI 就被引入，所有功能都被划分到数十个 service 当中，以 DI 的方式给相关方使用。
 - 平台差异也是通过 DI 处理的。（下面会有简单的讲解）
 
-_想要详细了解可阅读我在阅读 vscode 源码时写的两篇笔记。[一](https://github.com/hullis/blog/issues/25)、[二](https://github.com/hullis/blog/issues/27)。_
+_想要详细了解可阅读我在阅读 vscode 源码时写的两篇笔记。[一](https://github.com/wzhudev/blog/issues/25)、[二](https://github.com/wzhudev/blog/issues/27)。_
 
 ### Angular
 
@@ -154,7 +154,7 @@ _详情请看第二篇关于 vscode 的博客。_
 
 为了能在 React 中方便地使用依赖注入模式，在重构的过程中，我实现了一个轻量的依赖注入库以及一组 React binding，现已开源。
 
-[GitHub](https://github.com/hullis/wedi) / [npm](https://www.npmjs.com/package/wedi)
+[GitHub](https://github.com/wzhudev/wedi) / [npm](https://www.npmjs.com/package/wedi)
 
 wedi 具有如下特性：
 
@@ -346,7 +346,7 @@ function Consumer() {
 
 ![Snipaste_2020-01-22_17-44-12](https://user-images.githubusercontent.com/12122021/72883180-d3dd8c00-3d3e-11ea-921b-3814bc55f1c0.png)
 
-_这个截图来自[用 wedi 构建的 TodoMVC](https://hullis.github.io/wedi-demo/)（开发环境下）。_
+_这个截图来自[用 wedi 构建的 TodoMVC](https://wzhudev.github.io/wedi-demo/)（开发环境下）。_
 
 ### 结合 RxJS
 
@@ -387,4 +387,4 @@ function Display() {
 }
 ```
 
-_更多关于 wedi 的 API 可关注 [README](https://github.com/hullis/wedi)。_
+_更多关于 wedi 的 API 可关注 [README](https://github.com/wzhudev/wedi)。_

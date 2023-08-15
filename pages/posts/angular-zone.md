@@ -3,7 +3,7 @@ title: Angular 源码解析 - Zone.js
 date: 2019/10/16
 description: 介绍 Angular 的 Zone.js 机制
 tag: Angular, source code, Chinese, Zone.js
-author: Wendell
+author: Wenzhao
 ---
 
 # Angular 源码解析 - Zone.js
