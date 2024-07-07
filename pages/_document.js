@@ -10,8 +10,7 @@ class MyDocument extends Document {
     const meta = {
       title: 'Wenzhao Hu',
       description: 'Wenzhao Hu (wzhudev)',
-      image:
-        'https://assets.vercel.com/image/upload/q_auto/front/vercel/dps.png'
+      image: '',
     }
 
     return (
