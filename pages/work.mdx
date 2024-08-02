@@ -5,7 +5,7 @@ date: 2024-03-19
 ---
 
 Aiming to build productivity applications (and libraries) that both users
-and developers will love, I focused on collaborative algorithms, rendering
+and developers will love, I focused on collaboration algorithms, rendering
 techniques, editors, and software architecture. I actively contributed to
 the component library community during my internship.
 
@@ -18,14 +18,15 @@ Here's a summary of my work so far.
 [Univer](https://univer.ai) is a software development kit (SDK) for building office suites.
 Documents, spreadsheets and slides. It's highly
 extensible and can be embedded into other applications.
+We also have built [SaaS](https://space.univer.ai/home) and AI applications around it.
 
-I joined Univer in its early stages as head of engineering to design its architecture, lead its
-development, and guide the engineering team. I am thrilled to be a
-part of this journey.
+I joined Univer in its early stages as Head of Engineering. I designed its architecture, lead its
+development, and supervise the engineering team. I am thrilled to be a
+part of this incredible journey.
 
 My techinal contributions on Univer primarily focused on the areas list below:
 
-**Architecure design**
+**Architecure Design**
 
 I designed the architecture of the Univer SDK. It uses a plugin-based architecture and dependency injection
 to create a highly extensible architectural foundation.
@@ -40,11 +41,11 @@ run on desktop and mobile browsers, as well as in web workers or Node.js as
 a computation engine or collaborative engine. You can read more about this
 architecturee in our [official guide](<https://univer.ai/guides/sheet/architecture/univer>).
 
-**Collaborative editing system**
+**Collaborative Engine**
 
 Collaborative editing is crucial to productivity applications. This involves
 multiple people editing the same document simultaneously. I engineered Univer's
-collaborative editing system from the ground up. The system leverages a state
+collaborative engine from the ground up. This engine leverages a state
 machine model and operational transformation (OT). It delivers this capability
 across various document types and supports offline editing. The team has
 enhanced it with advanced transformation functions, a comprehensive file
@@ -52,16 +53,16 @@ history feature, and robust performance improvements.
 
 You can read more about our system here: [The OT algorithm and Univer's Collaborative Editing Design](https://univer.ai/blog/post/ot).
 
-**RPC & remote calculation**
+**RPC & Remote Computing**
 
 For Univer instances deployed in different threads to communicate seamlessly,
-I engineered and implemented the RPC architecture. Univer now excels at running
+I engineered and implemented the RPC package. Univer now excels at running
 its frontend in the browser, while handling calculations in Web Worker,
 or even in a Node.js process on the Univer server. This significantly boosts
 performance and enhances user experience. You can read more about this on
 our [official guide](https://univer.ai/guides/sheet/architecture/web-worker).
 
-## Lark spreadsheets
+## Lark Spreadsheets
 
 At Lark spreadsheets I am responsible for maintaining several features and
 started some new features.
@@ -69,9 +70,9 @@ started some new features.
 Along with our tech leader and some co-workers, we designed a new architecture
 for Lark spreadsheets and it is partially adopted in our codebase.
 
-## Enterprise WeChat document
+## Enterprise WeChat Document
 
-The Enterprise WeChat document is a collaborative editing application built
+The Enterprise WeChat Document is a collaborative editing application built
 into Enterprise WeChat. During my tenure, the following work is noteworthy:
 
 **Decoupling platform dependencies by introducing dependency injection**
@@ -82,7 +83,7 @@ mobile code, even though it would not actually execute! I introduced a
 dependency injection system, injecting respective implementations into the
 desktop and mobile, thereby significantly reducing the package size.
 
-**Splitting features and rmplementing lazy loading**
+**Splitting features and enabling lazy loading**
 
 Before the document completed the first screen rendering, some features
 unrelated to the first screen rendering initialization took up a lot of CPU
