@@ -15,21 +15,22 @@ Here's a summary of my work so far.
 
 ## Univer
 
-[Univer](https://univer.ai) is a software development kit (SDK) for building office suites.
-Documents, spreadsheets and slides. It's highly
-extensible and can be embedded into other applications.
-We also have built [SaaS](https://space.univer.ai/home) and AI applications around it.
+[Univer](https://univer.ai) is a software development kit (SDK) for 
+building office suites, including documents, spreadsheets and slides. It's highly
+extensible and can be embedded into other applications. We also have built a 
+[SaaS](https://space.univer.ai/home) and AI applications around it. Now Univer 
+has been adopted by several companies.
 
-I joined Univer in its early stages as Head of Engineering. I designed its architecture, lead its
-development, and supervise the engineering team. I am thrilled to be a
-part of this incredible journey.
+I joined Univer in its very early stage as Head of Engineering and Chief Architecture. 
+I designed its architecture, coded lots of core parts, lead its development, 
+supervise the engineering team and support other engineers. 
 
-My techinal contributions on Univer primarily focused on the areas list below:
+### Technical Contributions
 
-**Architecure Design**
+**Architecture**
 
-I designed the architecture of the Univer SDK. It uses a plugin-based architecture and dependency injection
-to create a highly extensible architectural foundation.
+I designed the architecture of the Univer SDK. It uses a plugin-based architecture 
+and dependency injection to create a highly extensible architectural foundation.
 
 In Univer, functionalities are registered into the application in the form of
 plugins, which means that users can choose the plugins they register according
@@ -38,10 +39,11 @@ to their actual needs, and even develop their own plugins.
 Moreover, it maximizes the isomorphism of various systems within Univer.
 By loading different plugins and injecting different dependencies, Univer can
 run on desktop and mobile browsers, as well as in web workers or Node.js as
-a computation engine or collaborative engine. You can read more about this
-architecturee in our [official guide](<https://univer.ai/guides/sheet/architecture/univer>).
+a computation engine or collaborative engine. 
 
-**Collaborative Engine**
+Read more about its architecture in the [official guide](<https://univer.ai/guides/sheet/architecture/univer>).
+
+**Collaboration engine**
 
 Collaborative editing is crucial to productivity applications. This involves
 multiple people editing the same document simultaneously. I engineered Univer's
@@ -51,35 +53,51 @@ across various document types and supports offline editing. The team has
 enhanced it with advanced transformation functions, a comprehensive file
 history feature, and robust performance improvements.
 
-You can read more about our system here: [The OT algorithm and Univer's Collaborative Editing Design](https://univer.ai/blog/post/ot).
+You can read more about the system here: [The OT algorithm and Univer's Collaborative Editing Design](https://univer.ai/blog/post/ot).
 
-**RPC & Remote Computing**
+**RPC & remote computing**
 
 For Univer instances deployed in different threads to communicate seamlessly,
-I engineered and implemented the RPC package. Univer now excels at running
+I designed and implemented the RPC packages. Univer now excels at running
 its frontend in the browser, while handling calculations in Web Worker,
 or even in a Node.js process on the Univer server. This significantly boosts
 performance and enhances user experience. You can read more about this on
 our [official guide](https://univer.ai/guides/sheet/architecture/web-worker).
 
+### Management Contributions
+
+**Team building**
+
+I hired the founding front-end engineers and am responsible for technical interviews.
+I also designed the onboarding process for new engineers. 
+
+I regularly have technical training sessions to ensure our engineers are up-to-date with 
+the latest technologies and best practices. 1:1s are conducted monthly to ensure 
+that the team is aligned with the company's goals, and individuals are supported 
+in their career development.
+
+**Project management**
+
+I play an important role in the project management of Univer, including task assignment, 
+design review, progress tracking, and code review.
+
 ## Lark Spreadsheets
 
 At Lark spreadsheets I am responsible for maintaining several features and
-started some new features.
+started some new features. Along with our tech leader and some co-workers, 
+we designed a new architecture for Lark spreadsheets and it is partially adopted 
+in our codebase, greatly improved the performance and maintainability of the codebase.
 
-Along with our tech leader and some co-workers, we designed a new architecture
-for Lark spreadsheets and it is partially adopted in our codebase.
+## WeCom (WeChat for Enterprises) Document
 
-## Enterprise WeChat Document
-
-The Enterprise WeChat Document is a collaborative editing application built
-into Enterprise WeChat. During my tenure, the following work is noteworthy:
+The WeCom Document is a collaborative editing application built
+into WeCom. During my tenure, the following work is noteworthy:
 
 **Decoupling platform dependencies by introducing dependency injection**
 
-In the code of the Enterprise WeChat document, the mobile and desktop code was
+In the code of the WeCom document, the mobile and desktop code was
 once very tightly coupled. In other words, the desktop would also load the
-mobile code, even though it would not actually execute! I introduced a
+mobile code, even though it would not actually execute. I introduced a
 dependency injection system, injecting respective implementations into the
 desktop and mobile, thereby significantly reducing the package size.
 
@@ -89,11 +107,13 @@ Before the document completed the first screen rendering, some features
 unrelated to the first screen rendering initialization took up a lot of CPU
 time. By splitting functions and implementing lazy loading for these functions,
 I significantly postponed their initialization timings, thereby greatly reducing
-the package size. Combined with some optimizations done by colleagues,
+the package size. 
+
+Combined with the platform decoupling and some optimizations done by colleagues,
 we successfully reduced the initialization time of an empty document to
 less than 1 second.
 
-**Text typesetting algorithm optimization**
+**Typesetting algorithm optimization**
 
 The Enterprise WeChat documentation uses Canvas to render text. I optimized
 the line-breaking algorithm so that it can correctly handle graphemes,
@@ -104,9 +124,9 @@ documents containing large lists by more than 10 seconds.
 
 ## redi
 
-[Redi](https://redi.wendell.fun) is a powerful dependency injection utility inspired by VSCode. Building on
-the simplicity of VSCode, Redi introduces advanced features such as injecting
-factories, values, and even lazy values based on Promises.
+[Redi](https://redi.wendell.fun) is a powerful dependency injection utility 
+inspired by VSCode. Building on the simplicity of VSCode, Redi introduces advanced 
+features such as injecting factories, values, and even lazy values based on Promises.
 
 Redi powers Univer and several applications in ByteDance.
 
