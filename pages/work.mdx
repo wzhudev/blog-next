@@ -6,8 +6,8 @@ date: 2024-03-19
 
 Aiming to build productivity applications (and libraries) that both users
 and developers will love, I focused on collaboration algorithms, rendering
-techniques, editors, and software architecture. I actively contributed to
-the component library community during my internship.
+techniques, editors, distributed systems and software architecture. 
+I actively contributed to the component library community during my internship.
 
 Here's a summary of my work so far.
 
@@ -15,11 +15,10 @@ Here's a summary of my work so far.
 
 ## Univer
 
-[Univer](https://univer.ai) is a software development kit (SDK) for 
+[Univer](https://univer.ai) 🌌 is a framework for 
 building office suites, including documents, spreadsheets and slides. It's highly
-extensible and can be embedded into other applications. We also have built a 
-[SaaS](https://space.univer.ai/home) and AI applications around it. Now Univer 
-has been adopted by several companies.
+extensible and can be embedded into other applications. Univer 
+now has been adopted by several companies.
 
 I joined Univer in its very early stage as Head of Engineering and Chief Architecture. 
 I designed its architecture, coded lots of core parts, lead its development, 
@@ -39,9 +38,9 @@ to their actual needs, and even develop their own plugins.
 Moreover, it maximizes the isomorphism of various systems within Univer.
 By loading different plugins and injecting different dependencies, Univer can
 run on desktop and mobile browsers, as well as in web workers or Node.js as
-a computation engine or collaborative engine. 
+a computation engine or a collaborative engine. 
 
-Read more about its architecture in the [official guide](<https://univer.ai/guides/sheet/architecture/univer>).
+Read more about its architecture in the [official guide](https://univer.ai/guides/sheet/architecture/univer).
 
 **Collaboration engine**
 
@@ -81,54 +80,33 @@ in their career development.
 I play an important role in the project management of Univer, including task assignment, 
 design review, progress tracking, and code review.
 
+---
+
+My previous work experience includes:
+
 ## Lark Spreadsheets
 
-At Lark spreadsheets I am responsible for maintaining several features and
-started some new features. Along with our tech leader and some co-workers, 
-we designed a new architecture for Lark spreadsheets and it is partially adopted 
-in our codebase, greatly improved the performance and maintainability of the codebase.
+At Lark spreadsheets, I was responsible for maintaining features and improving
+the maintainability of our codebase. Along with our tech leader and some colleagues, 
+I designed a new architecture for Lark spreadsheets and it is partially adopted 
+in our codebase, greatly improved the performance and maintainability of the new features.
 
-## WeCom (WeChat for Enterprises) Document
-
-The WeCom Document is a collaborative editing application built
-into WeCom. During my tenure, the following work is noteworthy:
-
-**Decoupling platform dependencies by introducing dependency injection**
-
-In the code of the WeCom document, the mobile and desktop code was
-once very tightly coupled. In other words, the desktop would also load the
-mobile code, even though it would not actually execute. I introduced a
-dependency injection system, injecting respective implementations into the
-desktop and mobile, thereby significantly reducing the package size.
-
-**Splitting features and enabling lazy loading**
-
-Before the document completed the first screen rendering, some features
-unrelated to the first screen rendering initialization took up a lot of CPU
-time. By splitting functions and implementing lazy loading for these functions,
-I significantly postponed their initialization timings, thereby greatly reducing
-the package size. 
-
-Combined with the platform decoupling and some optimizations done by colleagues,
-we successfully reduced the initialization time of an empty document to
-less than 1 second.
-
-**Typesetting algorithm optimization**
-
-The Enterprise WeChat documentation uses Canvas to render text. I optimized
-the line-breaking algorithm so that it can correctly handle graphemes,
-allowing for proper rendering of emojis. I also improved the algorithm for
-processing lists by changing from full processing to incremental processing
-that follows the typesetting progress, thereby reducing the loading time of
-documents containing large lists by more than 10 seconds.
+I also lead a small group of 5 engineers to ensure our front-end is available
+and reliable. 
 
 ## redi
 
-[Redi](https://redi.wendell.fun) is a powerful dependency injection utility 
-inspired by VSCode. Building on the simplicity of VSCode, Redi introduces advanced 
-features such as injecting factories, values, and even lazy values based on Promises.
+[redi](https://redi.wendell.fun) is a open source dependency injection library. While keeping it
+simple, I introduces advanced features such as injecting factories, values, 
+and even lazy dependencies based on Promises.
 
-Redi powers Univer and several applications in ByteDance.
+redi now powers Univer and several applications in ByteDance.
+
+## WeCom (WeChat for Enterprises) Document
+
+During my tenure, I introduced dependency injection into the project, injecting the appropriate implementations for both desktop and mobile platforms. This change significantly reduced the package sizes on each platform. Additionally, I separated the code for non-essential features that are not required for initial screen rendering and implemented lazy loading for these components. This approach delayed their initialization, further decreasing the overall package size. As a result, I successfully reduced the initialization time for an empty document to under one second.
+
+I also optimized the line-breaking algorithm to accurately handle graphemes, ensuring proper rendering of emojis. Furthermore, I enhanced the algorithm for processing lists by transitioning from full processing to incremental processing that aligns with the typesetting progress. This improvement cut the loading time for documents containing lot of list items (over 30,000+) by over ten seconds.
 
 ## NG-ZORRO
 
