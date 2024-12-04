@@ -1,3 +1,2 @@
-# [wendell.fun](https://wendell.fun)
+[wzhu.dev](https://wzhu.dev)
 
-Personal website & blogs.
